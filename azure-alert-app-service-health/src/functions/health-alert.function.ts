@@ -24,6 +24,7 @@ export class HealthAlertFunction extends BaseFunction<typeof bindings> {
 
   public override async execute(): Promise<HttpResponse> {
     // this.slackService.notify(this.context, 'test slack');
+    this.context.log(this.option);
     return this.res.send(`Hey`);
   }
 }
