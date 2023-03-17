@@ -5,6 +5,7 @@ import { NammathamApp } from 'nammatham';
 import { HealthAlertFunction, HealthAlertOption } from './functions/health-alert.function';
 import { SlackOption, SlackService } from './services/slack.service';
 import { HttpClient } from './services/http-client';
+import { Tokens } from './constants';
 
 const builder = NammathamApp.createBuilder(__filename);
 builder.addFunctions(HealthAlertFunction);
@@ -12,12 +13,12 @@ builder.services.addTransient(HttpClient);
 /**
  * MonitorSignInContractor Function
  */
-builder.container.bind<HealthAlertOption>(HealthAlertFunction.Token.Option).toConstantValue({});
+builder.container.bind<HealthAlertOption>(Tokens.HealthAlertOption).toConstantValue({});
 
 /**
  * Slack service
  */
-builder.container.bind<SlackOption>(SlackService.Token.Option).toConstantValue({
+builder.container.bind<SlackOption>(Tokens.SlackOption).toConstantValue({
   websiteName: process.env.WEBSITE_SITE_NAME,
   prefix: 'Health Alert',
   slackWebhookURL: process.env.Slack_Webhook_URL || '',

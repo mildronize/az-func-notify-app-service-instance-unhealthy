@@ -3,34 +3,32 @@ import { injectable, inject } from 'inversify';
 import { Context } from 'nammatham';
 import { HttpClient } from './http-client';
 import { throwError } from '../libs/error';
+import { Tokens } from '../constants';
 
 export interface SlackOption {
   slackWebhookURL: string;
   customSlackWarningAlert?: string;
   prefix?: string;
-   /**
+  /**
    * Automatic assigned by Azure Function
    */
-   websiteName?: string; // WEBSITE_SITE_NAME
+  websiteName?: string; // WEBSITE_SITE_NAME
 }
 
 @injectable()
 export class SlackService {
-  public static Token = {
-    Option: Symbol.for('SlackOption'),
-  };
   constructor(
-    @inject(SlackService.Token.Option) protected option: SlackOption,
+    @inject(Tokens.SlackOption) protected option: SlackOption,
     @inject(HttpClient) protected httpClient: HttpClient
   ) {}
 
   public async notify(context: Context, message: string) {
-    if(this.option.prefix){
-      message = `[${this.option.prefix}] ${message}`
+    if (this.option.prefix) {
+      message = `[${this.option.prefix}] ${message}`;
     }
     message = `${message} ${this.option.customSlackWarningAlert}`;
-    if(this.option.websiteName){
-      message = `${message} (notified by ${this.option.websiteName})`
+    if (this.option.websiteName) {
+      message = `${message} (notified by ${this.option.websiteName})`;
     }
     context.log(`Notify to slack with message: "${message}"`);
     const data = { text: message };

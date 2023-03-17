@@ -1,12 +1,6 @@
 import { injectable } from 'inversify';
 import axios, { AxiosRequestConfig } from 'axios';
 
-// type FetchRequestOption = Omit<RequestInit, 'headers' | 'body'> & {
-//   body?: any;
-// };
-
-// type FetchRequestMethodOption = Omit<FetchRequestOption, 'method'>;
-
 @injectable()
 export class HttpClient {
 
