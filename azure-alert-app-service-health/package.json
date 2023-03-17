@@ -1,0 +1,57 @@
+{
+  "name": "basic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "run-s build start",
+    "debug": "tsc && npm run start",
+    "build": "cross-env nammatham_env=build tsx src/startup.ts && tsc",
+    "build:production": "run-s build && npm prune --production",
+    "serve:watch": "nodemon --watch src --ext ts --exec 'npm run serve'",
+    "build:watch": "nodemon --watch src --ext ts --delay 0.5 --exec 'npm run build'",
+    "start:watch": "nodemon --watch dist --delay 0.3 --exec  'npm start'",
+    "deploy:dev": "npm run build:production && func azure functionapp publish wrmstorm-dev-portal-mobile-support",
+    "deploy:prod": "npm run build:production && func azure functionapp publish wrmstorm-auto-common-mobile-support",
+    "monitor:prod": "func azure functionapp logstream wrmstorm-auto-common-mobile-support",
+    "format": "prettier --write \"**/*.ts\"",
+    "start": "func start",
+    "dev": "run-s serve:watch",
+    "test": "ava"
+  },
+  "author": "Thada Wangthammang",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/arm-appservice": "^13.0.3",
+    "@azure/identity": "^3.1.3",
+    "ava": "^5.2.0",
+    "axios": "^1.3.4",
+    "dotenv": "^16.0.3",
+    "inversify": "^6.0.1",
+    "lodash": "^4.17.21",
+    "nammatham": "^1.3.0",
+    "node-fetch": "^3.3.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@azure/functions": "^3.5.0",
+    "@type-challenges/utils": "^0.1.1",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.13.0",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.20",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
+    "ts-node": "^10.9.1",
+    "tsx": "^3.12.3",
+    "typescript": "^4.9.5"
+  },
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}
