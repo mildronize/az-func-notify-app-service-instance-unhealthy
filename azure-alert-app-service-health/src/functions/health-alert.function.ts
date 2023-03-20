@@ -1,7 +1,7 @@
 import { BaseFunction, binding, functionName } from 'nammatham';
 import { inject } from 'inversify';
 import { SlackService } from '../services/slack.service';
-import { HttpResponse } from '@azure/functions';
+import { HttpRequest, HttpResponse } from '@azure/functions';
 import { Tokens } from '../constants';
 
 const bindings = [
@@ -22,9 +22,10 @@ export class HealthAlertFunction extends BaseFunction<typeof bindings> {
     super();
   }
 
-  public override async execute(): Promise<HttpResponse> {
+  public override async execute(req: HttpRequest): Promise<HttpResponse> {
     // this.slackService.notify(this.context, 'test slack');
-    this.context.log(this.option);
+    const rawBody = req.body;
+    this.context.log(rawBody);
     return this.res.send(`Hey`);
   }
 }
