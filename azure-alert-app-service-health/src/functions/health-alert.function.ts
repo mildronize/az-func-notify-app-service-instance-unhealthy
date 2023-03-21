@@ -72,42 +72,66 @@ export class HealthAlertFunction extends BaseFunction<typeof bindings> {
 
   public override async execute(req: HttpRequest): Promise<HttpResponse> {
     const rawBody = req.body;
-
     const parseBody = reqeustBodySchema.safeParse(rawBody);
-
     if (!parseBody.success) {
       const { error } = parseBody;
-      this.context.log(error);
-      // TODO: noti to slack
-      return this.res.status(400).send(`Invalid request body | Details: ${error.message}`);
+      this.context.log.error(error);
+      return this.responseBadRequest(`Health Alert schema is not correct, ${error.message}`);
     }
 
     const { data: body } = parseBody;
 
-    const resourceName = this.getReadableResourceName(body.data.essentials.configurationItems[0]); // TODO: checksize before access index 0, if length > 1 should log warning
-    const health = this.getReadableHealthStatus(body.data.essentials.monitorCondition);
-    const firedData = new Date(body.data.essentials.firedDateTime).toISOString().replace('T', ' ').replace('Z', '');
-    const instances = this.getInstancesName(body.data.alertContext.condition.allOf[0].dimensions);
+    const { configurationItems, monitorCondition, firedDateTime } = body.data.essentials;
+    /**
+     * body.data.essentials.configurationItems
+     */
+    if (configurationItems.length === 0)
+      return this.responseBadRequest(`Data schema: 'data.essentials.configurationItems'. Length of array is 0`);
+    if (configurationItems.length > 1)
+      this.log.warn(
+        `Don't expected Data schema: 'data.essentials.configurationItems'. Length of array is more than 1`
+      );
+    const resourceName = configurationItems[0];
+    const health = this.getReadableHealthStatus(monitorCondition);
+    const firedData = new Date(firedDateTime).toISOString().replace('T', ' ').replace('Z', '');
+
+    /**
+     * body.data.alertContext.condition.allOf[0].dimensions
+     */
+    const {allOf: conditionAllOf } = body.data.alertContext.condition;
+    if(conditionAllOf.length === 0){
+      return this.responseBadRequest(`Data schema: 'data.alertContext.condition.allOf'. Length of array is 0`);
+    }
+    if (conditionAllOf.length > 1)
+      this.log.warn(
+        `Don't expected Data schema: 'data.alertContext.condition.allOf'. Length of array is more than 1`
+      );
+    const instances = this.getInstancesName(conditionAllOf[0].dimensions);
     const instanceList = instances.map(name => ` - ${name}\n`);
 
-    const message = `\n[Dev MT - ${resourceName}] [${health}] At ${firedData} (UTC)\nInstace List\n${instanceList}`;
+    const message = `\n[${resourceName}] [${health}] At ${firedData} (UTC)\nInstance List:\n${instanceList}`;
 
     this.context.log(message);
-    // TODO: uncomment below to send notify to slack
-    // this.slackService.notify(this.context, message);
+    this.slackService.notify(this.context, message);
     return this.res.send('Notifying Slack...');
   }
 
-  private getReadableResourceName(resourceName: RequestBody['data']['essentials']['configurationItems'][number]) {
-    const resourceMap: Record<typeof resourceName, string> = {
-      '***REMOVED***': '***REMOVED***',
-      '***REMOVED***': '***REMOVED***',
-      '***REMOVED***': '***REMOVED***',
-      '***REMOVED***': '***REMOVED***',
-    };
-
-    return resourceMap[resourceName];
+  private responseBadRequest(message: string) {
+    const _message = `Invalid request body | Details: ${message}`;
+    this.slackService.notify(this.context, _message);
+    return this.res.status(400).send(_message);
   }
+
+  // private getReadableResourceName(resourceName: RequestBody['data']['essentials']['configurationItems'][number]) {
+  //   const resourceMap: Record<typeof resourceName, string> = {
+  //     '***REMOVED***': '***REMOVED***',
+  //     '***REMOVED***': '***REMOVED***',
+  //     '***REMOVED***': '***REMOVED***',
+  //     '***REMOVED***': '***REMOVED***',
+  //   };
+
+  //   return resourceMap[resourceName];
+  // }
 
   private getReadableHealthStatus(monitorCondition: RequestBody['data']['essentials']['monitorCondition']) {
     if (monitorCondition === 'Fired') {
