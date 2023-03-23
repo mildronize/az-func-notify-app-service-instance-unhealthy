@@ -15,18 +15,18 @@ Add `local.settings.json`
 }
 ```
 
-Dev
+Local Dev
 
 ```bash
+npm install
 npm run dev
 ```
 
-Build
+## Deploy
 
-```bash
-npm run build
-```
 
+1. Create Azure Functions on Portal
+2. 
 
 ---
 
