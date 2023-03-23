@@ -1,7 +1,1 @@
-# ***REMOVED***-azure-functions
-***REMOVED*** Azure Functions Collections
-
-## All Azure Functions
-- ***REMOVED***
-- ***REMOVED***
-- ***REMOVED***
+Azure Function Notify to Slack App Service when instance become unhealthy
