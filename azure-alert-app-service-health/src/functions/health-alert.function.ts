@@ -122,17 +122,6 @@ export class HealthAlertFunction extends BaseFunction<typeof bindings> {
     return this.res.status(400).send(_message);
   }
 
-  // private getReadableResourceName(resourceName: RequestBody['data']['essentials']['configurationItems'][number]) {
-  //   const resourceMap: Record<typeof resourceName, string> = {
-  //     '***REMOVED***': '***REMOVED***',
-  //     '***REMOVED***': '***REMOVED***',
-  //     '***REMOVED***': '***REMOVED***',
-  //     '***REMOVED***': '***REMOVED***',
-  //   };
-
-  //   return resourceMap[resourceName];
-  // }
-
   private getReadableHealthStatus(monitorCondition: RequestBody['data']['essentials']['monitorCondition']) {
     if (monitorCondition === 'Fired') {
       return '❌ Down';
