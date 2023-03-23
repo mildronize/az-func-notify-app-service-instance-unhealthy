@@ -2,7 +2,7 @@ import { BaseFunction, binding, functionName } from 'nammatham';
 import { inject } from 'inversify';
 import { SlackService } from '../services/slack.service';
 import { requestBodySchema } from './health-alert.schema';
-import { HttpRequest, HttpResponse } from '@azure/functions';
+import { HttpRequest } from '@azure/functions';
 import { z } from 'zod';
 
 export type RequestBody = z.infer<typeof requestBodySchema>;
@@ -18,7 +18,7 @@ export class HealthAlertFunction extends BaseFunction<typeof bindings> {
     super();
   }
 
-  public override async execute(req: HttpRequest): Promise<HttpResponse> {
+  public override async execute(req: HttpRequest): Promise<binding.inferReturn<typeof bindings>> {
     const rawBody = req.body;
     const parseBody = requestBodySchema.safeParse(rawBody);
     if (!parseBody.success) {
@@ -28,7 +28,6 @@ export class HealthAlertFunction extends BaseFunction<typeof bindings> {
     }
 
     const { data: body } = parseBody;
-
     const { configurationItems, monitorCondition, firedDateTime } = body.data.essentials;
     /**
      * body.data.essentials.configurationItems
