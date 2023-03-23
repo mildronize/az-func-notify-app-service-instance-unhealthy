@@ -1,3 +1,9 @@
+# Nammatham/AzureFunctions/GeneratedFiles:start
+health-alert
+# Nammatham/AzureFunctions/GeneratedFiles:end
+# Nammatham/AzureFunctions/Cache:start
+.nammatham
+# Nammatham/AzureFunctions/Cache:end
 # Logs
 logs
 *.log
