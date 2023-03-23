@@ -26,7 +26,16 @@ npm run dev
 
 
 1. Create Azure Functions on Portal
-2. 
+2. deploy to azure
+3. Go to app service -> Alert
+4. Create Alert
+    ![](docs/alert-rule-signal-health-status.png)
+5. Setup Alert Rules based on instance
+    ![](docs/alert-rule-setup.png)    
+6. Setup Action Group with Azure Functions
+    ![](docs/alert-rule-action-group.png)
+7. Setup Alert Rule Details
+    ![](docs/alert-rule-details.png)
 
 ---
 
