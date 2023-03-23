@@ -2,7 +2,6 @@ import { BaseFunction, binding, functionName } from 'nammatham';
 import { inject } from 'inversify';
 import { SlackService } from '../services/slack.service';
 import { HttpRequest, HttpResponse } from '@azure/functions';
-import { Tokens } from '../constants';
 import { z } from 'zod';
 
 const reqeustBodySchema = z.object({
@@ -64,8 +63,7 @@ export interface HealthAlertOption {}
 @functionName('health-alert', ...bindings)
 export class HealthAlertFunction extends BaseFunction<typeof bindings> {
   constructor(
-    @inject(SlackService) protected slackService: SlackService,
-    @inject(Tokens.HealthAlertOption) protected option: HealthAlertOption
+    @inject(SlackService) protected slackService: SlackService
   ) {
     super();
   }
