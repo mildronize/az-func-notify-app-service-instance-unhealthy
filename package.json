@@ -31,6 +31,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@type-challenges/utils": "^0.1.1",
     "@azure/functions": "^3.5.0",
     "@types/node": "^18.13.0",
     "cross-env": "^7.0.3",
